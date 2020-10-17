@@ -1,0 +1,14 @@
+accounts:
+- name: account1
+  secretID: 
+  secretKEY: 
+- name: account2
+  secretID: 
+  secretKEY: 
+- name: account3
+  secretID: 
+  secretKEY: 
+- name: account4
+  secretID: 
+  secretKEY: 
+
