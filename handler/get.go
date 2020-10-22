@@ -1,11 +1,8 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/aiaoyang/resourceManager/aliyun"
 	"github.com/aiaoyang/resourceManager/apis"
 	"github.com/gin-gonic/gin"
 )
@@ -55,7 +52,7 @@ func OnGetRDS(c *gin.Context) {
 }
 
 func OnGetAlarm(c *gin.Context) {
-	alarm, err := aliyun.GetAlarm()
+	alarm, err := apis.GetAlarm()
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
@@ -67,19 +64,18 @@ func OnGetAlarm(c *gin.Context) {
 		return
 	}
 
-	res, err := json.Marshal(alarm)
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"msg":  fmt.Sprintf("%s", res),
+			"msg":  alarm,
 			"code": 0,
 		},
 	)
 
 }
 
-func OnGetLifeTime(c *gin.Context) {
-	lifeTimeInstances, err := apis.GetLifeTime()
+func OnGetDomain(c *gin.Context) {
+	domain, err := apis.GetDomain()
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
@@ -94,8 +90,30 @@ func OnGetLifeTime(c *gin.Context) {
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"msg":  lifeTimeInstances,
+			"msg":  domain,
 			"code": 0,
 		},
 	)
+
+}
+func OnGetLifeTime(c *gin.Context) {
+	// lifeTimeInstances, err := apis.GetLifeTime()
+	// if err != nil {
+	// 	c.AbortWithStatusJSON(
+	// 		http.StatusBadRequest,
+	// 		gin.H{
+	// 			"errmsg": err,
+	// 			"code":   -1,
+	// 		},
+	// 	)
+	// 	return
+	// }
+
+	// c.JSON(
+	// 	http.StatusOK,
+	// 	gin.H{
+	// 		"msg":  lifeTimeInstances,
+	// 		"code": 0,
+	// 	},
+	// )
 }

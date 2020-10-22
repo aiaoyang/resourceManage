@@ -34,16 +34,40 @@ func GetRDS() (string, error) {
 	return fmt.Sprintf("%s", res), nil
 }
 
-func GetLifeTime() (string, error) {
-	return aliyun.GetLifeTime()
+// func GetLifeTime() (string, error) {
+// 	return aliyun.GetLifeTime()
+// }
+func GetAlarm() (string, error) {
+	alarm, err := aliyun.GetAlarm()
+	if err != nil {
+		return "", err
+	}
+
+	res, err := json.Marshal(alarm)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s", res), nil
+
 }
-func GetDomain() {}
+func GetDomain() (string, error) {
+	domain, err := aliyun.GetDomain()
+	if err != nil {
+		return "", err
+	}
+
+	res, err := json.Marshal(domain)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s", res), nil
+}
 
 func GetRedis() {
 
 }
-
-func GetAlarm() {}
 
 func GetDelay() {
 

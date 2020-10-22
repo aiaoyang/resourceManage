@@ -91,6 +91,7 @@ func main() {
 	r.GET("/rds", handler.OnGetRDS)
 	r.GET("/alarm", handler.OnGetAlarm)
 	r.GET("/life", handler.OnGetLifeTime)
+	r.GET("/domain", handler.OnGetDomain)
 	r.Run(":9090")
 }
 

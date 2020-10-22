@@ -11,7 +11,7 @@
 
         <el-table :data="alarmInfo">
           <el-table-column label="账号名" prop="account"> </el-table-column>
-          <el-table-column label="告警数" prop="alarmCount"> </el-table-column>
+          <el-table-column label="告警数" prop="count"> </el-table-column>
         </el-table>
       </div>
     </el-card>
@@ -27,7 +27,7 @@ export default {
       alarmInfo: [
         {
           account: "yongshiwl",
-          alarmCount: "1",
+          count: "1",
         },
       ],
     };

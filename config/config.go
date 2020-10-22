@@ -11,7 +11,8 @@ import (
 var GVC AliyunConfig = AliyunConfig{}
 
 type AliyunConfig struct {
-	Accounts []SingleAccount `yaml:"account"`
+	Accounts []SingleAccount
+	Regions  []string
 }
 
 type SingleAccount struct {

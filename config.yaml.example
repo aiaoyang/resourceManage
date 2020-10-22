@@ -11,4 +11,6 @@ accounts:
 - name: account4
   secretID: 
   secretKEY: 
-
+regions:
+	- cn-shanghai
+	- cn-hangzhou
