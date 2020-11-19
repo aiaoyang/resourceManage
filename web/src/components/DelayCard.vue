@@ -32,11 +32,16 @@ export default {
         console.log(res);
         let content = JSON.parse(res.data.msg);
         let thirty = 0;
+        let seven = 0;
         for (let i = 0; i < content.length; i++) {
           if (content[i].status == "1") {
             thirty++;
           }
+          if (content[i].status == "2") {
+            seven++;
+          }
         }
+        this.delays[0].seven += seven;
         this.delays[0].thirty += thirty;
       });
       GetRDS().then((res) => {

@@ -1,6 +1,7 @@
 package aliyun
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"sync"
@@ -87,6 +88,8 @@ func describeAlarm() ([]AlarmInfo, error) {
 
 			tmp := AlarmResponse{resp, client.Name}
 
+			fmt.Println(tmp.response.(*cms.DescribeAlertHistoryListResponse))
+
 			ch <- tmp
 
 		}(wg, responsesChan, c)
@@ -107,6 +110,7 @@ func describeAlarm() ([]AlarmInfo, error) {
 	for accountName, count := range alarmsMap {
 		alarms = append(alarms, AlarmInfo{accountName, count})
 	}
+	fmt.Println(alarms)
 	return alarms, nil
 
 }
@@ -122,7 +126,7 @@ func NewDescribeAlarmRequest() *cms.DescribeAlertHistoryListRequest {
 	request.StartTime = strconv.FormatInt(time.Now().AddDate(0, 0, -1).Unix(), 10)
 	request.EndTime = strconv.FormatInt(time.Now().Unix(), 10)
 
-	request.PageSize = requests.NewInteger(100)
+	request.PageSize = requests.NewInteger(1000)
 
 	return request
 

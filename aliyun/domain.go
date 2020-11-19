@@ -104,13 +104,11 @@ func descirbeDomain() ([]DomainInfo, error) {
 
 	index := 0
 
+	domainToAccountMap := make(map[string]string)
 	for responses := range responsesChan {
-
 		for _, domain := range responses.response.Data.Domain {
 
-			index++
-
-			paseTime, err := time.Parse("2006-01-02T15:04Z", domain.ExpirationDate)
+			paseTime, err := time.Parse("2006-01-02 15:04:05", domain.ExpirationDate)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -127,22 +125,28 @@ func descirbeDomain() ([]DomainInfo, error) {
 			if time.Now().After(paseTime) {
 				s = nearDead
 			}
+			if _, ok := domainToAccountMap[domain.DomainName]; ok {
+				continue
+			} else {
+				domainToAccountMap[domain.DomainName] = responses.Name
+				index++
 
-			tmpDomain := DomainInfo{
-				Name:  domain.DomainName,
-				Index: fmt.Sprintf("%d", index),
-				EndOfTime: func(endOfTime string) string {
-					if endOfTime == "" {
-						return "后付费"
-					}
-					return endOfTime
-				}(domain.ExpirationDate),
-				Account: responses.Name,
-				Type:    "Domain",
-				Status:  s,
+				tmpDomain := DomainInfo{
+					Name:  domain.DomainName,
+					Index: fmt.Sprintf("%d", index),
+					EndOfTime: func(endOfTime string) string {
+						if endOfTime == "" {
+							return "error"
+						}
+						return endOfTime
+					}(domain.ExpirationDate),
+					Account: domainToAccountMap[domain.DomainName],
+					Type:    "Domain",
+					Status:  s,
+				}
+
+				domains = append(domains, tmpDomain)
 			}
-
-			domains = append(domains, tmpDomain)
 
 		}
 
@@ -159,9 +163,9 @@ func NewDescribeDomainRequest() *domain.QueryDomainListRequest {
 
 	request.Scheme = "https"
 
-	request.PageNum = requests.NewInteger(100)
+	request.PageNum = requests.NewInteger(1)
 
-	request.PageSize = requests.NewInteger(100)
+	request.PageSize = requests.NewInteger(30)
 
 	return request
 
