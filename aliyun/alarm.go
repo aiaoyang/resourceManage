@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/aiaoyang/resourceManager/aliyun/request"
 	"github.com/aiaoyang/resourceManager/config"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/cms"
@@ -20,14 +21,14 @@ type AlarmInfo struct {
 
 // AlarmClient 告警请求客户端
 type AlarmClient struct {
-	client interface{}
+	client *cms.Client
 
 	Name string
 }
 
 // AlarmResponse 告警返回信息结构体
 type AlarmResponse struct {
-	response interface{}
+	response *cms.DescribeAlertHistoryListResponse
 	Name     string
 }
 
@@ -55,9 +56,7 @@ func init() {
 
 // GetAlarm 获取告警信息
 func GetAlarm() ([]AlarmInfo, error) {
-
 	return describeAlarm()
-
 }
 
 func describeAlarm() ([]AlarmInfo, error) {
@@ -68,13 +67,20 @@ func describeAlarm() ([]AlarmInfo, error) {
 
 	wg.Add(len(alarmClients))
 
+	/*
+		func (AlarmClients,AlarmResponse,DescribeAlarmRequest)
+	*/
 	for _, c := range alarmClients {
 
 		go func(wg *sync.WaitGroup, ch chan AlarmResponse, client AlarmClient) {
 
 			defer wg.Done()
 
-			resp, err := client.client.(*cms.Client).DescribeAlertHistoryList(NewDescribeAlarmRequest())
+			req := request.NewDescribeAlarmRequest()
+
+			req.SetScheme("https")
+
+			resp, err := client.client.DescribeAlertHistoryList(req)
 
 			if err != nil {
 
@@ -88,7 +94,7 @@ func describeAlarm() ([]AlarmInfo, error) {
 
 			tmp := AlarmResponse{resp, client.Name}
 
-			fmt.Println(tmp.response.(*cms.DescribeAlertHistoryListResponse))
+			fmt.Println(tmp.response)
 
 			ch <- tmp
 
@@ -103,8 +109,8 @@ func describeAlarm() ([]AlarmInfo, error) {
 	alarmsMap := make(map[string]int, 0)
 
 	for responses := range responsesChan {
-		l := responses.response.(*cms.DescribeAlertHistoryListResponse).AlarmHistoryList.AlarmHistory
-		alarmsMap[responses.Name] += len(l)
+		alarmHistory := responses.response.AlarmHistoryList.AlarmHistory
+		alarmsMap[responses.Name] += len(alarmHistory)
 	}
 	alarms := []AlarmInfo{}
 	for accountName, count := range alarmsMap {

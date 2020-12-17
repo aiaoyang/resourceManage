@@ -11,6 +11,7 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/domain"
 )
 
+// DomainInfo 域名信息结构体
 type DomainInfo struct {
 	Name      string `json:"name"`
 	EndOfTime string `json:"end"`
@@ -20,12 +21,14 @@ type DomainInfo struct {
 	Status    stat   `json:"status"`
 }
 
+// DomainClient 域名查询客户端
 type DomainClient struct {
 	client *domain.Client
 
 	Name string
 }
 
+// DomainResponse 域名查询返回结构体
 type DomainResponse struct {
 	response *domain.QueryDomainListResponse
 	Name     string
@@ -54,6 +57,7 @@ func init() {
 
 }
 
+// GetDomain 查询域名信息
 func GetDomain() ([]DomainInfo, error) {
 	return descirbeDomain()
 }
