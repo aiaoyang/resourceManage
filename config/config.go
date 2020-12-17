@@ -22,6 +22,8 @@ type SingleAccount struct {
 }
 
 func init() {
+	log.SetFlags(log.Llongfile | log.Ldate)
+
 	LoadAliyunConfig()
 }
 
@@ -34,6 +36,7 @@ func LoadAliyunConfig() {
 	v.SetConfigType("yaml")
 
 	err := v.ReadInConfig()
+	log.Printf("file: %v\n", v.ConfigFileUsed())
 	if err != nil {
 		log.Fatal(err)
 	}

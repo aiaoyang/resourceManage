@@ -17,8 +17,6 @@ func NewDescribeAlarmRequest() *cms.DescribeAlertHistoryListRequest {
 
 	request := cms.CreateDescribeAlertHistoryListRequest()
 
-	request.Scheme = "https"
-
 	request.State = "ALARM"
 	request.StartTime = strconv.FormatInt(time.Now().AddDate(0, 0, -1).Unix(), 10)
 	request.EndTime = strconv.FormatInt(time.Now().Unix(), 10)
@@ -34,8 +32,6 @@ func NewDescribeECSRequest() *ecs.DescribeInstancesRequest {
 
 	request := ecs.CreateDescribeInstancesRequest()
 
-	request.Scheme = "https"
-
 	request.PageSize = requests.NewInteger(100)
 
 	return request
@@ -47,8 +43,6 @@ func NewDescribeRDSRequest() *rds.DescribeDBInstancesRequest {
 
 	request := rds.CreateDescribeDBInstancesRequest()
 
-	request.Scheme = "https"
-
 	request.PageSize = requests.NewInteger(100)
 
 	return request
@@ -58,8 +52,6 @@ func NewDescribeRDSRequest() *rds.DescribeDBInstancesRequest {
 func NewDescribeDomainRequest() *domain.QueryDomainListRequest {
 
 	request := domain.CreateQueryDomainListRequest()
-
-	request.Scheme = "https"
 
 	request.PageNum = requests.NewInteger(1)
 
@@ -73,8 +65,6 @@ func NewDescribeDomainRequest() *domain.QueryDomainListRequest {
 func NewDescribeBalanceRequest() *bssopenapi.QueryAccountBalanceRequest {
 
 	request := bssopenapi.CreateQueryAccountBalanceRequest()
-
-	request.Scheme = "https"
 
 	return request
 
