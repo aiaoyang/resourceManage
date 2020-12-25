@@ -51,6 +51,7 @@ var (
 	errCreateTCPListener  = errors.New("create SLB TCPListener")
 	errCreateVirtualGroup = errors.New("create VirtualGroup")
 	errAddServerToGroup   = errors.New("add server to group")
+	errStartLoadBalancer  = errors.New("start loadbalancer tcp listener")
 )
 
 // StartCreateSLB |
@@ -120,8 +121,17 @@ func StartCreateSLB(slbInfo NewSLBInfo) (err error) {
 		err = errAddServerToGroup
 		return
 	}
-	return nil
 
+	// 开启slb的tcp监听
+	startLoadBalancerResp, err := StartLoadBalancerListener(slbInstanceID, slbInfo.FrontPort)
+	if err != nil {
+		return
+	}
+	if !startLoadBalancerResp.IsSuccess() {
+		err = errStartLoadBalancer
+		return
+	}
+	return nil
 }
 
 // rollBackDeleteSLB 创建slb过程出现错误需要回滚
@@ -235,4 +245,17 @@ func AddServerToVirtualGroup(ecsInstanceIDs []string, ecsPort, vServerGroupID st
 	}
 
 	return response, nil
+}
+
+// StartLoadBalancerListener 开启负载均衡监听端口
+func StartLoadBalancerListener(loadBalancerID, frontPort string) (response *slb.StartLoadBalancerListenerResponse, err error) {
+
+	request := slb.CreateStartLoadBalancerListenerRequest()
+	request.Scheme = "https"
+
+	response, err = client.StartLoadBalancerListener(request)
+	if err != nil {
+		return
+	}
+	return
 }
