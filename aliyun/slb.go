@@ -127,6 +127,7 @@ func StartCreateSLB(slbInfo NewSLBInfo) (err error) {
 	if err != nil {
 		return
 	}
+
 	if !startLoadBalancerResp.IsSuccess() {
 		err = errStartLoadBalancer
 		return
