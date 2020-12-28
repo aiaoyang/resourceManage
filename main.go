@@ -75,5 +75,6 @@ func main() {
 	r.GET("/alarm", handler.OnGetAlarm)
 	r.GET("/life", handler.OnGetLifeTime)
 	r.GET("/domain", handler.OnGetDomain)
+	r.GET("/cert", handler.OnGetCert)
 	r.Run(":9090")
 }
