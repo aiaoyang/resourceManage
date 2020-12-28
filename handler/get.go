@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/aiaoyang/resourceManager/apis"
@@ -34,8 +35,13 @@ func OnGetLifeTime(c *gin.Context) {
 
 }
 
+func OnGetCert(c *gin.Context) {
+	cert, err := apis.GetCert()
+	errHandler(c, cert, err)
+}
 func errHandler(c *gin.Context, payload string, err error) {
 	if err != nil {
+		log.Printf("err : %s\n", err.Error())
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			gin.H{
