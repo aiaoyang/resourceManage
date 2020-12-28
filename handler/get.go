@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type getResource func() (string, error)
+
 // OnGetECS 查询ecs列表
 func OnGetECS(c *gin.Context) {
 	errHandler(c, apis.GetECS)
@@ -43,7 +45,7 @@ func OnGetCert(c *gin.Context) {
 }
 
 // errHandler 错误处理
-func errHandler(c *gin.Context, f func() (string, error)) {
+func errHandler(c *gin.Context, f getResource) {
 	payload, err := f()
 	if err != nil {
 		log.Printf("err : %s\n", err.Error())
