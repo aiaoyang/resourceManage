@@ -1,6 +1,7 @@
 package aliyun
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -107,11 +108,13 @@ func init() {
 	}
 }
 
-func GetCertList() {
-	getCertList()
-
+// GetCertList 证书列表查询
+func GetCertList() ([]CertInfo, error) {
+	return getCertList()
 }
-func getCertList() {
+func getCertList() ([]CertInfo, error) {
+
+	ctx := context.Background()
 
 	responsesChan := make(chan CertResponse, len(certClients))
 
@@ -122,6 +125,7 @@ func getCertList() {
 	for _, c := range certClients {
 
 		go func(
+			ctx context.Context,
 			wg *sync.WaitGroup,
 			ch chan CertResponse,
 			client CertClient,
@@ -145,7 +149,7 @@ func getCertList() {
 
 			ch <- tmp
 
-		}(wg, responsesChan, c)
+		}(ctx, wg, responsesChan, c)
 
 	}
 
@@ -164,8 +168,9 @@ func getCertList() {
 		err := json.Unmarshal(responses.response.GetHttpContentBytes(), &resp)
 
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
+
 		for _, cert := range resp.CertificateList {
 			log.Printf("certName: %s\n\n", cert.Sans)
 		}
@@ -174,7 +179,7 @@ func getCertList() {
 
 			paseTime, err := time.Parse("2006-01-02 15:04:05", cert.EndDate)
 			if err != nil {
-				log.Fatal(err)
+				return nil, err
 			}
 			// log.Printf("time.end : %s\n", paseTime.String())
 
@@ -216,13 +221,8 @@ func getCertList() {
 
 	}
 
-	// return domains, nil
+	return certs, nil
 
-	// response, err := client.ProcessCommonRequest(NewGetCertListRequest(config.GVC.Regions[0]))
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Print(response.GetHttpContentString())
 }
 
 // NewGetCertListRequest 生成获取证书列表信息的请求request
