@@ -77,10 +77,13 @@ type CertInfo struct {
 	Status    stat   `json:"status"`
 }
 
+// CertResponse 自定义 证书请求响应response
 type CertResponse struct {
 	response *responses.CommonResponse
 	Name     string
 }
+
+// CertClient 自定义证书请求客户端
 type CertClient struct {
 	client *domain.Client
 
