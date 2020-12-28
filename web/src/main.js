@@ -2,6 +2,7 @@ import App from '@/App.vue'
 import Domain from '@/components/Domain'
 import ECS from '@/components/ECS'
 import RDS from '@/components/RDS'
+import Cert from '@/components/Cert'
 import Home from '@/views/Home.vue'
 import ElementUI from 'element-ui'
 import "element-ui/lib/theme-chalk/index.css"
@@ -20,7 +21,8 @@ const routes = [
 		children: [
 			{ path: "/ecs", component: ECS },
 			{ path: "/rds", component: RDS },
-			{ path: "/domain", component: Domain }
+			{ path: "/domain", component: Domain },
+			{ path: "/cert", component: Cert }
 		]
 
 	}

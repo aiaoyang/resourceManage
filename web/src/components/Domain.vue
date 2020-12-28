@@ -9,7 +9,7 @@
         <el-table-column label="资源类型" prop="type"> </el-table-column>
         <el-table-column label="资源名称" prop="name"> </el-table-column>
         <el-table-column label="到期日" prop="end">
-          <template scope="scope">
+          <template slot-scope="scope">
             <span v-if="scope.row.status == '0'" class="ok-span">
               {{ scope.row.end }}
             </span>

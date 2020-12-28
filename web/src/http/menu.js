@@ -3,6 +3,7 @@ export const GetMenu = () => {
 		// "总览",
 		"ecs",
 		"rds",
-		"domain"
+		"domain",
+		"cert"
 	];
 };

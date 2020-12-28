@@ -1,14 +1,13 @@
 <template>
   <div>
     <el-card class="box-card">
-      <el-button type="primary" @click="flushRDS" style="text-align: left"
+      <el-button type="primary" @click="flushDomain" style="text-align: left"
         >刷新</el-button
       >
       <el-table :data="resources" style="width: 100%">
         <el-table-column label="ID" prop="index"> </el-table-column>
         <el-table-column label="资源类型" prop="type"> </el-table-column>
         <el-table-column label="资源名称" prop="name"> </el-table-column>
-        <el-table-column label="资源规格" prop="size"> </el-table-column>
         <el-table-column label="到期日" prop="end">
           <template slot-scope="scope">
             <span v-if="scope.row.status == '0'" class="ok-span">
@@ -32,9 +31,9 @@
 </template>
 
 <script>
-import { GetRDS } from "@/http/resources.js";
+import { GetCert } from "@/http/resources.js";
 export default {
-  name: "RDS",
+  name: "Cert",
   data() {
     return {
       resourceLabel: [],
@@ -42,9 +41,9 @@ export default {
     };
   },
   methods: {
-    flushRDS: function () {
+    flushDomain: function () {
       let tmp = "";
-      GetRDS().then((res) => {
+      GetCert().then((res) => {
         console.log(res.data);
         let js = JSON.parse(res.data.msg);
         console.log(js);
@@ -54,7 +53,7 @@ export default {
     },
   },
   created() {
-    this.flushRDS();
+    this.flushDomain();
   },
 };
 </script>
