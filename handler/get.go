@@ -10,29 +10,25 @@ import (
 
 // OnGetECS 查询ecs列表
 func OnGetECS(c *gin.Context) {
-	ecses, err := apis.GetECS()
-	errHandler(c, ecses, err)
+	errHandler(c, apis.GetECS)
 
 }
 
 // OnGetRDS 查询rds列表
 func OnGetRDS(c *gin.Context) {
-	rdses, err := apis.GetRDS()
-	errHandler(c, rdses, err)
+	errHandler(c, apis.GetRDS)
 
 }
 
 // OnGetAlarm 查询告警列表
 func OnGetAlarm(c *gin.Context) {
-	alarm, err := apis.GetAlarm()
-	errHandler(c, alarm, err)
+	errHandler(c, apis.GetAlarm)
 
 }
 
 // OnGetDomain 查询域名列表
 func OnGetDomain(c *gin.Context) {
-	domain, err := apis.GetDomain()
-	errHandler(c, domain, err)
+	errHandler(c, apis.GetDomain)
 
 }
 
@@ -43,12 +39,12 @@ func OnGetLifeTime(c *gin.Context) {
 
 // OnGetCert 查询证书列表
 func OnGetCert(c *gin.Context) {
-	cert, err := apis.GetCert()
-	errHandler(c, cert, err)
+	errHandler(c, apis.GetCert)
 }
 
 // errHandler 错误处理
-func errHandler(c *gin.Context, payload string, err error) {
+func errHandler(c *gin.Context, f func() (string, error)) {
+	payload, err := f()
 	if err != nil {
 		log.Printf("err : %s\n", err.Error())
 		c.AbortWithStatusJSON(
