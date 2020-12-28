@@ -177,7 +177,7 @@ func getCertList() ([]CertInfo, error) {
 		log.Printf("cert list is : %v\n\n", resp.CertificateList)
 		for _, cert := range resp.CertificateList {
 
-			paseTime, err := time.Parse("2006-01-02 15:04:05", cert.EndDate)
+			paseTime, err := time.Parse("2006-01-02", cert.EndDate)
 			if err != nil {
 				return nil, err
 			}
