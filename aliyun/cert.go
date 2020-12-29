@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"sync"
-	"time"
 
 	"github.com/aiaoyang/resourceManager/config"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
@@ -175,28 +174,9 @@ func getCertList() ([]CertInfo, error) {
 		}
 
 		for _, cert := range resp.CertificateList {
-			log.Printf("certName: %s\n\n", cert.Sans)
-		}
-		log.Printf("cert list is : %v\n\n", resp.CertificateList)
-		for _, cert := range resp.CertificateList {
 
-			paseTime, err := time.Parse("2006-01-02", cert.EndDate)
-			if err != nil {
-				return nil, err
-			}
-			// log.Printf("time.end : %s\n", paseTime.String())
+			s := parseTime(cert.EndDate, certTimeFormat)
 
-			s := green
-
-			if time.Now().AddDate(0, 1, 0).After(paseTime) {
-				s = yellow
-			}
-			if time.Now().AddDate(0, 0, 7).After(paseTime) {
-				s = red
-			}
-			if time.Now().After(paseTime) {
-				s = nearDead
-			}
 			if _, ok := certToAccountMap[cert.Sans]; ok {
 				continue
 			} else {
