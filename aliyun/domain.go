@@ -5,6 +5,7 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/domain"
 )
 
+// GetDomain 查询域名
 func GetDomain() (infos []Info, err error) {
 	var resp = domain.CreateQueryDomainListResponse()
 

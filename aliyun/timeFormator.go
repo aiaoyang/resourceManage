@@ -11,6 +11,7 @@ const (
 	ecsTimeFormat    timeFormat = "2006-01-02T15:04Z"
 	certTimeFormat   timeFormat = "2006-01-02"
 	domainTimeFormat timeFormat = "2006-01-02 15:04:05"
+	rdsTimeFormat    timeFormat = "2006-01-02T15:04:05Z"
 )
 
 func parseTime(timeString string, tFormat timeFormat) (s stat) {
