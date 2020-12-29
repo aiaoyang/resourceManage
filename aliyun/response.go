@@ -8,15 +8,12 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/domain"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/rds"
 )
 
 var (
 	errECSTransferError = errors.New("response 类型不为 DescribeInstancesResponse")
 
 	errDomainTransferError = errors.New("response 类型不为 QueryDomainListResponse")
-
-	errRDSTransferError = errors.New("response 类型不为 MyDescribeDBInstancesResponse")
 )
 
 // ResponseToResult 通用响应转换函数  Response转为我们所需要Info
@@ -195,7 +192,7 @@ func (m MyCertResponse) Info(accountName string) (infos []Info, err error) {
 					return endOfTime
 				}(cert.EndDate),
 				Account: accountName,
-				Type:    ResourceMap[int(CertType)],
+				Type:    "Cert",
 				Status:  s,
 			}
 
@@ -215,41 +212,4 @@ func AcsResponseToCertInfo(accountName string, response responses.AcsResponse) (
 	}
 
 	return MyCertResponse(*res).Info(accountName)
-}
-
-// MyDescribeDBInstancesResponse 添加ecs查询响应结构体别名，方便为其添加Info方法
-type MyDescribeDBInstancesResponse rds.DescribeDBInstancesResponse
-
-// Info 将Ecs response转换为Info信息
-func (m MyDescribeDBInstancesResponse) Info(accountName string) (infos []Info, err error) {
-	for _, v := range m.Items.DBInstance {
-		s := parseTime(v.ExpireTime, rdsTimeFormat)
-		infos = append(
-			infos,
-			Info{
-				Name:   fmt.Sprintf("%s/%s", v.DBInstanceDescription, v.DBInstanceId),
-				Detail: fmt.Sprintf("%s", v.DBInstanceClass),
-				EndOfTime: func(endOfTime string) string {
-					if endOfTime == "" {
-						return "后付费"
-					}
-					return endOfTime
-				}(v.ExpireTime),
-				Account: accountName,
-				Type:    ResourceMap[int(RdsType)],
-				Status:  s,
-			},
-		)
-	}
-	return
-}
-
-// AcsResponseToRdsInfo 特例函数，针对rds的信息查询，将response转为Info
-func AcsResponseToRdsInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
-	res, ok := response.(*rds.DescribeDBInstancesResponse)
-	if !ok {
-		err = errRDSTransferError
-		return
-	}
-	return MyDescribeDBInstancesResponse(*res).Info(accountName)
 }

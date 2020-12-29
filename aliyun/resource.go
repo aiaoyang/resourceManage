@@ -1,6 +1,7 @@
 package aliyun
 
 import (
+	"log"
 	"sync"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
@@ -68,7 +69,9 @@ func Describe(
 	wg.Add(len(clients))
 	ch := make(chan res, len(clients))
 
+	log.Printf("clients: %v\n", clients)
 	for _, client := range clients {
+		log.Printf("req: %v\nresp: %v", request, response)
 
 		go func(
 			wg *sync.WaitGroup,

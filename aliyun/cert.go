@@ -5,11 +5,11 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 )
 
-// GetCert 查询证书
 func GetCert() (infos []Info, err error) {
-	var req = NewGetCertListRequest("cn-hangzhou")
-	var resp = responses.NewCommonResponse()
-
+	var (
+		req  = NewGetCertListRequest("cn-hangzhou")
+		resp = responses.NewCommonResponse()
+	)
 	return Describe(GlobalClients, req, resp, CertType)
 }
 
