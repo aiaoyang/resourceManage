@@ -32,6 +32,9 @@ const (
 
 	// DomainType 域名资源类型
 	DomainType
+
+	// CertType 证书资源类型
+	CertType
 )
 
 var (
@@ -40,6 +43,7 @@ var (
 		0: "ECS",
 		1: "RDS",
 		2: "Domain",
+		3: "Cert",
 	}
 )
 
