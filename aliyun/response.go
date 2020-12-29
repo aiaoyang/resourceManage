@@ -12,11 +12,13 @@ import (
 )
 
 var (
-	errECSTransferError = errors.New("response 类型不为 DescribeInstancesResponse")
+	errECSTransferError = errors.New("ecs response 类型不为 DescribeInstancesResponse")
 
-	errDomainTransferError = errors.New("response 类型不为 QueryDomainListResponse")
+	errDomainTransferError = errors.New("domain response 类型不为 QueryDomainListResponse")
 
-	errRDSTransferError = errors.New("response 类型不为 MyDescribeDBInstancesResponse")
+	errCertTransferError = errors.New("cert response 类型不为 MyDescribeDBInstancesResponse")
+
+	errRDSTransferError = errors.New("rds response 类型不为 CommonResponse")
 )
 
 // ResponseToResult 通用响应转换函数  Response转为我们所需要Info
@@ -213,17 +215,17 @@ func (m MyCertResponse) Info(accountName string) (infos []Info, err error) {
 func AcsResponseToCertInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
 	res, ok := response.(*responses.CommonResponse)
 	if !ok {
-		err = errDomainTransferError
+		err = errCertTransferError
 		return
 	}
 
 	return MyCertResponse(*res).Info(accountName)
 }
 
-// MyDescribeDBInstancesResponse 添加ecs查询响应结构体别名，方便为其添加Info方法
+// MyDescribeDBInstancesResponse 添加RDS查询响应结构体别名，方便为其添加Info方法
 type MyDescribeDBInstancesResponse rds.DescribeDBInstancesResponse
 
-// Info 将Ecs response转换为Info信息
+// Info 将RDS response转换为Info信息
 func (m MyDescribeDBInstancesResponse) Info(accountName string) (infos []Info, err error) {
 	for _, v := range m.Items.DBInstance {
 		s := parseTime(v.ExpireTime, rdsTimeFormat)
