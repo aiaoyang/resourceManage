@@ -1,5 +1,6 @@
 添加新资源需要添加的内容：
 resource.go -> 
+```
 const (
 
 	// EcsType ecs资源类型
@@ -14,8 +15,10 @@ const (
     // XXX XXX资源类型
 ->  XXXType
 )
+```
 
 timeFormator.go ->
+```
 const (
 	ecsTimeFormat    timeFormat = "2006-01-02T15:04Z"
 	certTimeFormat   timeFormat = "2006-01-02"
@@ -24,20 +27,23 @@ const (
 
 ->	XXXTimeFormat    timeFormat = "XXXX"
 )
+```
 
 
 response.go -> 
-
+```
 type MyXXXResponse XXX.XXXResponse
 
 func (x MyXXXResponse)Info(name string)(infos []Info){}
 
 func AcsResponseToXXXInfo(accountName string, response responses.AcsResponse) (result []Info, err error)
-
+```
 资源名.go
+```
 // GetXXX 查询XXX列表
 func GetXXX() ([]Info, error) {
 	var resp = XXX.CreateDescribeXXXResponse()
 	var req = XXX.CreateDescribeXXXRequest()
 	return Describe(ecsClients, DescribeXXXRequest(), resp, XXXType)
 }
+```
