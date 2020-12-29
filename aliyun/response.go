@@ -32,6 +32,9 @@ func ResponseToResult(accountName string, response responses.AcsResponse, resour
 	case CertType:
 		result, err = AcsResponseToCertInfo(accountName, response)
 		return
+	case RdsType:
+		result, err = AcsResponseToRdsInfo(accountName, response)
+		return
 	default:
 		return nil, fmt.Errorf("资源类型传参错误")
 	}
