@@ -12,13 +12,19 @@ const (
 	DomainType
 
     // XXX XXX资源类型
-    XXXType
+->  XXXType
 )
 
+timeFormator.go ->
+const (
+	ecsTimeFormat    timeFormat = "2006-01-02T15:04Z"
+	certTimeFormat   timeFormat = "2006-01-02"
+	domainTimeFormat timeFormat = "2006-01-02 15:04:05"
+	rdsTimeFormat    timeFormat = "2006-01-02T15:04:05Z"
 
-request.go -> 
+->	XXXTimeFormat    timeFormat = "XXXX"
+)
 
-func NewXXXXRequest()XXXRequest
 
 response.go -> 
 
@@ -29,37 +35,9 @@ func (x MyXXXResponse)Info(name string)(infos []Info){}
 func AcsResponseToXXXInfo(accountName string, response responses.AcsResponse) (result []Info, err error)
 
 资源名.go
-
-// Client XXX请求客户端
-type Client struct {
-	*XXX.Client
-	AccountName string
-}
-
-// Name 返回客户端的账号名
-func (c Client) Name() string {
-	return c.AccountName
-}
-
-// clients 客户端列表
-var XXXClients []AliyunClient
-
-func init() {
-
-	for _, region := range config.GVC.Regions {
-		for _, m := range config.GVC.Accounts {
-			c, err := ecs.NewClientWithAccessKey(region, m.SecretID, m.SecretKEY)
-			if err != nil {
-				log.Fatal(err)
-			}
-			tmp := Client{c, m.Name}
-			ecsClients = append(ecsClients, tmp)
-		}
-	}
-}
-
-// GetECS 查询ecs列表
+// GetXXX 查询XXX列表
 func GetXXX() ([]Info, error) {
-	var resp = XXX.DescribeXXXResponse{}
+	var resp = XXX.CreateDescribeXXXResponse()
+	var req = XXX.CreateDescribeXXXRequest()
 	return Describe(ecsClients, DescribeXXXRequest(), resp, XXXType)
 }
