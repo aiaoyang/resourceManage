@@ -38,7 +38,7 @@ func GetDelay() {
 }
 
 func GetCert() (string, error) {
-	return errHandler(aliyun.GetCertList())
+	return errHandler(aliyun.GetCert())
 }
 
 func errHandler(payload interface{}, err error) (res string, rerr error) {

@@ -1,6 +1,7 @@
 package aliyun
 
 import (
+	"encoding/json"
 	"sync"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
@@ -19,6 +20,10 @@ type Info struct {
 	Account   string `json:"account"`
 	Index     string `json:"index"`
 	Status    stat   `json:"status"`
+}
+
+func (i *Info) Byte() (res []byte, err error) {
+	return json.Marshal(i)
 }
 
 const (
