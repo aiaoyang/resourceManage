@@ -34,5 +34,4 @@ func ResponseToResult(accountName string, response responses.AcsResponse, resour
 	default:
 		return nil, fmt.Errorf("资源类型传参错误")
 	}
-
 }
