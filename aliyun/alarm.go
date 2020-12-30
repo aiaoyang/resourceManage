@@ -1,10 +1,12 @@
 package aliyun
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
+	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/cms"
 )
 
@@ -31,4 +33,30 @@ func NewDescribeAlarmRequest() *cms.DescribeAlertHistoryListRequest {
 
 	return request
 
+}
+
+// MyDescribeAlertHistoryListResponse 添加RDS查询响应结构体别名，方便为其添加Info方法
+type MyDescribeAlertHistoryListResponse cms.DescribeAlertHistoryListResponse
+
+// Info 将Alert response转换为Info信息
+func (m MyDescribeAlertHistoryListResponse) Info(accountName string) (infos []Info, err error) {
+	infos = append(
+		infos,
+		Info{
+			Name:   accountName,
+			Detail: fmt.Sprintf("%d", len(m.AlarmHistoryList.AlarmHistory)),
+			Type:   ResourceMap[int(AlertType)],
+		},
+	)
+	return
+}
+
+// AcsResponseToAlarmInfo 特例函数，针对告警的信息查询，将response转为Info
+func AcsResponseToAlarmInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+	res, ok := response.(*cms.DescribeAlertHistoryListResponse)
+	if !ok {
+		err = errRDSTransferError
+		return
+	}
+	return MyDescribeAlertHistoryListResponse(*res).Info(accountName)
 }
