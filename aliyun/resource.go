@@ -34,6 +34,9 @@ const (
 
 	// CertType 证书资源类型
 	CertType
+
+	// AlertType 告警资源类型
+	AlertType
 )
 
 var (
@@ -43,6 +46,7 @@ var (
 		1: "RDS",
 		2: "Domain",
 		3: "Cert",
+		4: "Alert",
 	}
 )
 

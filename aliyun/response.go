@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/cms"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/domain"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/rds"
@@ -43,6 +44,16 @@ func ResponseToResult(accountName string, response responses.AcsResponse, resour
 
 }
 
+// AcsResponseToEcsInfo 特例函数，针对ecs的信息查询，将response转为Info
+func AcsResponseToEcsInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+	res, ok := response.(*ecs.DescribeInstancesResponse)
+	if !ok {
+		err = errECSTransferError
+		return
+	}
+	return MyDescribeInstancesResponse(*res).Info(accountName)
+}
+
 // MyDescribeInstancesResponse 添加ecs查询响应结构体别名，方便为其添加Info方法
 type MyDescribeInstancesResponse ecs.DescribeInstancesResponse
 
@@ -71,14 +82,14 @@ func (m MyDescribeInstancesResponse) Info(accountName string) (infos []Info, err
 	return
 }
 
-// AcsResponseToEcsInfo 特例函数，针对ecs的信息查询，将response转为Info
-func AcsResponseToEcsInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
-	res, ok := response.(*ecs.DescribeInstancesResponse)
+// AcsResponseToDoaminInfo 特例函数，针对Domain的信息查询，将response转为Info
+func AcsResponseToDoaminInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+	res, ok := response.(*domain.QueryDomainListResponse)
 	if !ok {
-		err = errECSTransferError
+		err = errDomainTransferError
 		return
 	}
-	return MyDescribeInstancesResponse(*res).Info(accountName)
+	return MyDescribeDomainResponse(*res).Info(accountName)
 }
 
 // MyDescribeDomainResponse 查询域名列表
@@ -107,14 +118,15 @@ func (m MyDescribeDomainResponse) Info(accountName string) (infos []Info, err er
 	return
 }
 
-// AcsResponseToDoaminInfo 特例函数，针对Domain的信息查询，将response转为Info
-func AcsResponseToDoaminInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
-	res, ok := response.(*domain.QueryDomainListResponse)
+// AcsResponseToCertInfo 特例函数，针对Cert的信息查询，将response转为Info
+func AcsResponseToCertInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+	res, ok := response.(*responses.CommonResponse)
 	if !ok {
-		err = errDomainTransferError
+		err = errCertTransferError
 		return
 	}
-	return MyDescribeDomainResponse(*res).Info(accountName)
+
+	return MyCertResponse(*res).Info(accountName)
 }
 
 // MyCertResponse 证书响应结构体
@@ -211,15 +223,14 @@ func (m MyCertResponse) Info(accountName string) (infos []Info, err error) {
 	return
 }
 
-// AcsResponseToCertInfo 特例函数，针对Cert的信息查询，将response转为Info
-func AcsResponseToCertInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
-	res, ok := response.(*responses.CommonResponse)
+// AcsResponseToRdsInfo 特例函数，针对rds的信息查询，将response转为Info
+func AcsResponseToRdsInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+	res, ok := response.(*rds.DescribeDBInstancesResponse)
 	if !ok {
-		err = errCertTransferError
+		err = errRDSTransferError
 		return
 	}
-
-	return MyCertResponse(*res).Info(accountName)
+	return MyDescribeDBInstancesResponse(*res).Info(accountName)
 }
 
 // MyDescribeDBInstancesResponse 添加RDS查询响应结构体别名，方便为其添加Info方法
@@ -249,12 +260,28 @@ func (m MyDescribeDBInstancesResponse) Info(accountName string) (infos []Info, e
 	return
 }
 
-// AcsResponseToRdsInfo 特例函数，针对rds的信息查询，将response转为Info
-func AcsResponseToRdsInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
-	res, ok := response.(*rds.DescribeDBInstancesResponse)
+// MyDescribeAlertHistoryListResponse 添加RDS查询响应结构体别名，方便为其添加Info方法
+type MyDescribeAlertHistoryListResponse cms.DescribeAlertHistoryListResponse
+
+// Info 将Alert response转换为Info信息
+func (m MyDescribeAlertHistoryListResponse) Info(accountName string) (infos []Info, err error) {
+	infos = append(
+		infos,
+		Info{
+			Name:   accountName,
+			Detail: fmt.Sprintf("%d", len(m.AlarmHistoryList.AlarmHistory)),
+			Type:   ResourceMap[int(AlertType)],
+		},
+	)
+	return
+}
+
+// AcsResponseToAlarmInfo 特例函数，针对告警的信息查询，将response转为Info
+func AcsResponseToAlarmInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+	res, ok := response.(*cms.DescribeAlertHistoryListResponse)
 	if !ok {
 		err = errRDSTransferError
 		return
 	}
-	return MyDescribeDBInstancesResponse(*res).Info(accountName)
+	return MyDescribeAlertHistoryListResponse(*res).Info(accountName)
 }
