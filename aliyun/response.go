@@ -22,17 +22,15 @@ func ResponseToResult(accountName string, response responses.AcsResponse, resour
 
 	switch resourceType {
 	case EcsType:
-		result, err = AcsResponseToEcsInfo(accountName, response)
-		return
+		return AcsResponseToEcsInfo(accountName, response)
 	case DomainType:
-		result, err = AcsResponseToDoaminInfo(accountName, response)
-		return
+		return AcsResponseToDoaminInfo(accountName, response)
 	case CertType:
-		result, err = AcsResponseToCertInfo(accountName, response)
-		return
+		return AcsResponseToCertInfo(accountName, response)
 	case RdsType:
-		result, err = AcsResponseToRdsInfo(accountName, response)
-		return
+		return AcsResponseToRdsInfo(accountName, response)
+	case AlertType:
+		return AcsResponseToAlarmInfo(accountName, response)
 	default:
 		return nil, fmt.Errorf("资源类型传参错误")
 	}
