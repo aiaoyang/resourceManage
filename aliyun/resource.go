@@ -53,7 +53,7 @@ var (
 // Describe 通用调用入口
 func Describe(
 	// 客户端列表
-	clients []MyClient,
+	clients []IClient,
 	// 请求结构体
 	request requests.AcsRequest,
 	// 响应结构体
@@ -77,7 +77,7 @@ func Describe(
 		go func(
 			wg *sync.WaitGroup,
 			ch chan res,
-			client MyClient,
+			client IClient,
 			request requests.AcsRequest,
 			response responses.AcsResponse,
 		) {
