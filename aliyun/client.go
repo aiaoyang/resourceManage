@@ -28,7 +28,8 @@ type IClient interface {
 
 // iAliClient 实现阿里云基础Client接口和自定义的添加客户端账号名称的接口
 type iAliClient interface {
-	// 阿里云 Base Client所拥有的方法
+	ProcessCommonRequest(request *requests.CommonRequest) (response *responses.CommonResponse, err error)
+
 	DoAction(request requests.AcsRequest, response responses.AcsResponse) (err error)
 }
 
@@ -37,7 +38,6 @@ var GlobalClients []IClient
 
 func init() {
 	GlobalClients = NewClients()
-
 }
 
 // NewClients 生成新的客户端列表

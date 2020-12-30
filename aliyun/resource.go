@@ -1,6 +1,7 @@
 package aliyun
 
 import (
+	"log"
 	"sync"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
@@ -63,38 +64,12 @@ func Describe(
 
 ) (result []Info, err error) {
 
-	type res struct {
-		infos []Info
-		err   error
-	}
-
 	wg := &sync.WaitGroup{}
 	wg.Add(len(clients))
 	ch := make(chan res, len(clients))
 
 	for _, client := range clients {
-
-		go func(
-			wg *sync.WaitGroup,
-			ch chan res,
-			client IClient,
-			request requests.AcsRequest,
-			response responses.AcsResponse,
-		) {
-
-			err = client.DoAction(request, response)
-			if err != nil {
-				return
-			}
-
-			i, e := ResponseToResult(client.Name(), response, resourceType)
-			ch <- res{
-				infos: i,
-				err:   e,
-			}
-
-			wg.Done()
-		}(wg, ch, client, request, response)
+		go doRequest(wg, ch, client, request, response, resourceType)
 	}
 	wg.Wait()
 
@@ -109,4 +84,34 @@ func Describe(
 	}
 
 	return
+}
+
+type res struct {
+	infos []Info
+	err   error
+}
+
+func doRequest(
+	wg *sync.WaitGroup,
+	ch chan res,
+	client IClient,
+	request requests.AcsRequest,
+	response responses.AcsResponse,
+	resourceType ResourceType,
+) {
+	defer wg.Done()
+	err := client.DoAction(request, response)
+	if err != nil {
+		log.Println(err)
+		ch <- res{err: err}
+		return
+	}
+
+	i, e := ResponseToResult(client.Name(), response, resourceType)
+	log.Println("123")
+	ch <- res{
+		infos: i,
+		err:   e,
+	}
+
 }

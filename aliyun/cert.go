@@ -11,7 +11,9 @@ import (
 func GetCert() (infos []Info, err error) {
 	var req = NewGetCertListRequest("cn-hangzhou")
 	var resp = responses.NewCommonResponse()
+	req.TransToAcsRequest()
 
+	// log.Println(resp.String())
 	return Describe(GlobalClients, req, resp, CertType)
 }
 
