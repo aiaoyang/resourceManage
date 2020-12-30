@@ -11,7 +11,7 @@ import (
 
 // Client 请求客户端结构体
 type Client struct {
-	aliClient
+	iAliClient
 	AccountName string
 }
 
@@ -22,12 +22,12 @@ func (c Client) Name() string {
 
 // IClient 包内 客户端接口
 type IClient interface {
-	aliClient
+	iAliClient
 	Name() string
 }
 
-// aliClient 实现阿里云基础Client接口和自定义的添加客户端账号名称的接口
-type aliClient interface {
+// iAliClient 实现阿里云基础Client接口和自定义的添加客户端账号名称的接口
+type iAliClient interface {
 	// 阿里云 Base Client所拥有的方法
 	DoAction(request requests.AcsRequest, response responses.AcsResponse) (err error)
 }
@@ -40,12 +40,12 @@ func NewClients() (clients []IClient) {
 	clients = make([]IClient, 0)
 	for _, region := range config.GVC.Regions {
 		for _, m := range config.GVC.Accounts {
-			aliClient, err := sdk.NewClientWithAccessKey(region, m.SecretID, m.SecretKEY)
+			iAliClient, err := sdk.NewClientWithAccessKey(region, m.SecretID, m.SecretKEY)
 			if err != nil {
 				log.Fatal(err)
 			}
 			tmp := Client{
-				aliClient,
+				iAliClient,
 				m.Name,
 			}
 			clients = append(clients, tmp)
