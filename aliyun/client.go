@@ -35,6 +35,11 @@ type iAliClient interface {
 // GlobalClients 全局客户端
 var GlobalClients []IClient
 
+func init() {
+	GlobalClients = NewClients()
+
+}
+
 // NewClients 生成新的客户端列表
 func NewClients() (clients []IClient) {
 	clients = make([]IClient, 0)
@@ -52,9 +57,4 @@ func NewClients() (clients []IClient) {
 		}
 	}
 	return
-}
-
-func init() {
-	GlobalClients = NewClients()
-
 }
