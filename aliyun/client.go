@@ -20,8 +20,8 @@ func (c Client) Name() string {
 	return c.AccountName
 }
 
-// MyClient 包内 客户端接口
-type MyClient interface {
+// IClient 包内 客户端接口
+type IClient interface {
 	aliClient
 	Name() string
 }
@@ -33,11 +33,11 @@ type aliClient interface {
 }
 
 // GlobalClients 全局客户端
-var GlobalClients []MyClient
+var GlobalClients []IClient
 
 // NewClients 生成新的客户端列表
-func NewClients() (clients []MyClient) {
-	clients = make([]MyClient, 0)
+func NewClients() (clients []IClient) {
+	clients = make([]IClient, 0)
 	for _, region := range config.GVC.Regions {
 		for _, m := range config.GVC.Accounts {
 			aliClient, err := sdk.NewClientWithAccessKey(region, m.SecretID, m.SecretKEY)
