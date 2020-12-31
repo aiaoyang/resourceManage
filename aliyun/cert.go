@@ -11,6 +11,8 @@ import (
 func GetCert() (infos []Info, err error) {
 	var req = NewGetCertListRequest("cn-hangzhou")
 	var resp = responses.NewCommonResponse()
+	// CommonRequest 需要转换到AcsRequest才可进行DoAction函数调用，否则Ontology字段为空指针
+	req.TransToAcsRequest()
 
 	return Describe(GlobalClients, req, resp, CertType)
 }
