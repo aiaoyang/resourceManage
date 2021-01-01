@@ -1,4 +1,4 @@
-package aliyunapi
+package commonapi
 
 // type AliyunRequest struct {
 // }

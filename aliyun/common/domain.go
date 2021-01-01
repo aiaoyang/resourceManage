@@ -1,4 +1,4 @@
-package aliyun
+package common
 
 import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"

@@ -1,4 +1,4 @@
-package aliyun
+package common
 
 // Balance 余额结构体
 type Balance struct {
