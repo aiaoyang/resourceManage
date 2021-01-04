@@ -121,7 +121,6 @@ func (m MyCertResponse) Info(accountName string) (infos []resource.Info, err err
 			certToAccountMap[cert.Sans] = true
 
 			tmpCert := resource.Info{
-				Name: cert.Sans,
 				// 域名信息
 				EndOfTime: func(endOfTime string) string {
 					if endOfTime == "" {
