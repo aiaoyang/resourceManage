@@ -1,6 +1,8 @@
 package common
 
 import (
+	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/aiaoyang/resourceManager/resource"
@@ -45,13 +47,16 @@ func Describe(
 	wg.Wait()
 
 	close(resultChan)
-
+	var errSlice = []string{}
 	for info := range resultChan {
 		if info.err != nil {
-			err = info.err
+			errSlice = append(errSlice, info.err.Error())
 		} else {
 			result = append(result, info.infos...)
 		}
+	}
+	if len(errSlice) != 0 {
+		err = fmt.Errorf("%s", strings.Join(errSlice, "\n"))
 	}
 
 	return
@@ -59,7 +64,7 @@ func Describe(
 
 func doRequest(
 	wg *sync.WaitGroup,
-	ch chan infoResult,
+	resultChan chan infoResult,
 	client IClient,
 	requestFunc func() requests.AcsRequest,
 	responseFunc func() responses.AcsResponse,
@@ -74,18 +79,18 @@ func doRequest(
 
 	if err != nil {
 
-		ch <- infoResult{
+		resultChan <- infoResult{
 			err: err,
 		}
 
 		return
 	}
 
-	i, e := ResponseToResult(client.Name(), response, resourceType)
+	infos, err := ResponseToResult(client.Name(), response, resourceType)
 
-	ch <- infoResult{
-		infos: i,
-		err:   e,
+	resultChan <- infoResult{
+		infos,
+		err,
 	}
 
 }
