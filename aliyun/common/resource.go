@@ -19,9 +19,9 @@ func Describe(
 	// 客户端列表
 	clients []IClient,
 	// 请求结构体
-	request requests.AcsRequest,
+	request func() requests.AcsRequest,
 	// 响应结构体
-	response responses.AcsResponse,
+	responseFunc func() responses.AcsResponse,
 	// 资源类型
 	resourceType resource.Type,
 
@@ -32,13 +32,12 @@ func Describe(
 	resultChan := make(chan infoResult, len(clients))
 
 	for _, client := range clients {
-
 		go doRequest(
 			wg,
 			resultChan,
 			client,
 			request,
-			response,
+			responseFunc,
 			resourceType,
 		)
 	}
@@ -62,10 +61,12 @@ func doRequest(
 	wg *sync.WaitGroup,
 	ch chan infoResult,
 	client IClient,
-	request requests.AcsRequest,
-	response responses.AcsResponse,
+	requestFunc func() requests.AcsRequest,
+	responseFunc func() responses.AcsResponse,
 	resourceType resource.Type,
 ) {
+	request := requestFunc()
+	response := responseFunc()
 
 	defer wg.Done()
 

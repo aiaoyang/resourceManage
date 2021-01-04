@@ -10,13 +10,19 @@ import (
 
 // GetDomain 查询域名
 func GetDomain() (infos []resource.Info, err error) {
-	var resp = domain.CreateQueryDomainListResponse()
 
-	var req = domain.CreateQueryDomainListRequest()
-	req.PageNum = requests.NewInteger(1)
-	req.PageSize = requests.NewInteger(30)
+	var createRequestFunc = func() requests.AcsRequest {
+		var req = domain.CreateQueryDomainListRequest()
+		req.PageNum = requests.NewInteger(1)
+		req.PageSize = requests.NewInteger(30)
+		return req
+	}
 
-	return Describe(GlobalClients, req, resp, resource.DomainType)
+	var createResponseFunc = func() responses.AcsResponse {
+		return domain.CreateQueryDomainListResponse()
+	}
+
+	return Describe(GlobalClients, createRequestFunc, createResponseFunc, resource.DomainType)
 }
 
 // AcsResponseToDoaminInfo 特例函数，针对Domain的信息查询，将response转为Info

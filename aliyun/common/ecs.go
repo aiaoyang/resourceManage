@@ -12,11 +12,19 @@ import (
 
 // GetECS 查询ecs列表
 func GetECS() ([]resource.Info, error) {
-	var resp = ecs.CreateDescribeInstancesResponse()
-	var req = ecs.CreateDescribeInstancesRequest()
-	// (每页100)
-	req.PageSize = requests.NewInteger(100)
-	return Describe(GlobalClients, req, resp, resource.EcsType)
+
+	var createRequestFunc = func() requests.AcsRequest {
+		var req = ecs.CreateDescribeInstancesRequest()
+		// (每页100)
+		req.PageSize = requests.NewInteger(100)
+		return req
+	}
+
+	var createResponseFunc = func() responses.AcsResponse {
+		return ecs.CreateDescribeInstancesResponse()
+	}
+
+	return Describe(GlobalClients, createRequestFunc, createResponseFunc, resource.EcsType)
 }
 
 // AcsResponseToEcsInfo 特例函数，针对ecs的信息查询，将response转为Info

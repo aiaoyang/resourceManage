@@ -12,11 +12,18 @@ import (
 
 // GetRDS 查询RDS列表
 func GetRDS() (infos []resource.Info, err error) {
-	var req = rds.CreateDescribeDBInstancesRequest()
-	var resp = rds.CreateDescribeDBInstancesResponse()
-	req.PageSize = requests.NewInteger(100)
 
-	return Describe(GlobalClients, req, resp, resource.RdsType)
+	var createRequestFunc = func() requests.AcsRequest {
+		var req = rds.CreateDescribeDBInstancesRequest()
+		req.PageSize = requests.NewInteger(100)
+		return req
+	}
+
+	var createResponseFunc = func() responses.AcsResponse {
+		return rds.CreateDescribeDBInstancesResponse()
+	}
+
+	return Describe(GlobalClients, createRequestFunc, createResponseFunc, resource.RdsType)
 }
 
 // AcsResponseToRdsInfo 特例函数，针对rds的信息查询，将response转为Info

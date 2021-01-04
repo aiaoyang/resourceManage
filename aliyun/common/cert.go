@@ -11,12 +11,20 @@ import (
 
 // GetCert 查询证书
 func GetCert() (infos []resource.Info, err error) {
-	var req = NewGetCertListRequest("cn-hangzhou")
-	var resp = responses.NewCommonResponse()
-	// CommonRequest 需要转换到AcsRequest才可进行DoAction函数调用，否则Ontology字段为空指针
-	req.TransToAcsRequest()
 
-	return Describe(GlobalClients, req, resp, resource.CertType)
+	var createRequestFunc = func() requests.AcsRequest {
+		var req = NewGetCertListRequest("cn-hangzhou")
+
+		// CommonRequest 需要转换到AcsRequest才可进行DoAction函数调用，否则Ontology字段为空指针
+		req.TransToAcsRequest()
+		return req
+	}
+
+	var createResponseFunc = func() responses.AcsResponse {
+		return responses.NewCommonResponse()
+	}
+
+	return Describe(GlobalClients, createRequestFunc, createResponseFunc, resource.CertType)
 }
 
 // NewGetCertListRequest 生成获取证书列表信息的请求request

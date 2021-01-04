@@ -14,9 +14,16 @@ import (
 
 // GetAlarm 获取告警信息
 func GetAlarm() ([]resource.Info, error) {
-	var req = NewDescribeAlarmRequest()
-	var resp = cms.CreateDescribeAlertHistoryListResponse()
-	return Describe(GlobalClients, req, resp, resource.AlertType)
+
+	var createRequestFunc = func() requests.AcsRequest {
+		var req = NewDescribeAlarmRequest()
+		return req
+	}
+
+	var createResponseFunc = func() responses.AcsResponse {
+		return cms.CreateDescribeAlertHistoryListResponse()
+	}
+	return Describe(GlobalClients, createRequestFunc, createResponseFunc, resource.AlertType)
 	// return describeAlarm()
 }
 
