@@ -1,26 +1,26 @@
 package aliyun
 
 import (
-	"github.com/aiaoyang/resourceManager/aliyun/common"
+	ali "github.com/aiaoyang/resourceManager/aliyun/common"
 )
 
-func GetCert() (infos []common.Info, err error) {
-	return common.GetCert()
+func GetCert() (infos []ali.Info, err error) {
+	return ali.GetCert()
 }
 
-func GetECS() (infos []common.Info, err error) {
-	return common.GetECS()
+func GetECS() (infos []ali.Info, err error) {
+	return ali.GetECS()
 }
-func GetRDS() (infos []common.Info, err error) {
-	return common.GetRDS()
-}
-
-func GetDomain() (infos []common.Info, err error) {
-	return common.GetDomain()
+func GetRDS() (infos []ali.Info, err error) {
+	return ali.GetRDS()
 }
 
-func GetAlarm() (infos []common.Info, err error) {
-	return common.GetAlarm()
+func GetDomain() (infos []ali.Info, err error) {
+	return ali.GetDomain()
+}
+
+func GetAlarm() (infos []ali.Info, err error) {
+	return ali.GetAlarm()
 }
 
 // func GetSLB() (infos []common.Info, err error) {

@@ -4,23 +4,24 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/aiaoyang/resourceManager/resource"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 )
 
 // GetECS 查询ecs列表
-func GetECS() ([]Info, error) {
+func GetECS() ([]resource.Info, error) {
 	var resp = ecs.CreateDescribeInstancesResponse()
 	var req = ecs.CreateDescribeInstancesRequest()
 	// (每页100)
 	req.PageSize = requests.NewInteger(100)
 	log.Println("123")
-	return Describe(GlobalClients, req, resp, EcsType)
+	return Describe(GlobalClients, req, resp, resource.EcsType)
 }
 
 // AcsResponseToEcsInfo 特例函数，针对ecs的信息查询，将response转为Info
-func AcsResponseToEcsInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+func AcsResponseToEcsInfo(accountName string, response responses.AcsResponse) (result []resource.Info, err error) {
 	log.Println("123")
 	res, ok := response.(*ecs.DescribeInstancesResponse)
 	if !ok {
@@ -34,12 +35,12 @@ func AcsResponseToEcsInfo(accountName string, response responses.AcsResponse) (r
 type MyDescribeInstancesResponse ecs.DescribeInstancesResponse
 
 // Info 将Ecs response转换为Info信息
-func (m MyDescribeInstancesResponse) Info(accountName string) (infos []Info, err error) {
+func (m MyDescribeInstancesResponse) Info(accountName string) (infos []resource.Info, err error) {
 	for _, v := range m.Instances.Instance {
 		s := parseTime(v.ExpiredTime, ecsTimeFormat)
 		infos = append(
 			infos,
-			Info{
+			resource.Info{
 				Name: v.InstanceName,
 				// Index:  fmt.Sprintf("%d", index),
 				Detail: fmt.Sprintf("%dC-%.1fG", v.Cpu, float32(v.Memory)/1024.0),
@@ -50,7 +51,7 @@ func (m MyDescribeInstancesResponse) Info(accountName string) (infos []Info, err
 					return endOfTime
 				}(v.ExpiredTime),
 				Account: accountName,
-				Type:    ResourceMap[int(EcsType)],
+				Type:    resource.ResourceMap[int(resource.EcsType)],
 				Status:  s,
 			},
 		)

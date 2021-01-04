@@ -3,18 +3,19 @@ package common
 import (
 	"encoding/json"
 
+	"github.com/aiaoyang/resourceManager/resource"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 )
 
 // GetCert 查询证书
-func GetCert() (infos []Info, err error) {
+func GetCert() (infos []resource.Info, err error) {
 	var req = NewGetCertListRequest("cn-hangzhou")
 	var resp = responses.NewCommonResponse()
 	// CommonRequest 需要转换到AcsRequest才可进行DoAction函数调用，否则Ontology字段为空指针
 	req.TransToAcsRequest()
 
-	return Describe(GlobalClients, req, resp, CertType)
+	return Describe(GlobalClients, req, resp, resource.CertType)
 }
 
 // NewGetCertListRequest 生成获取证书列表信息的请求request
@@ -35,7 +36,7 @@ func NewGetCertListRequest(region string) *requests.CommonRequest {
 }
 
 // AcsResponseToCertInfo 特例函数，针对Cert的信息查询，将response转为Info
-func AcsResponseToCertInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+func AcsResponseToCertInfo(accountName string, response responses.AcsResponse) (result []resource.Info, err error) {
 	res, ok := response.(*responses.CommonResponse)
 	if !ok {
 		err = errCertTransferError
@@ -49,7 +50,7 @@ func AcsResponseToCertInfo(accountName string, response responses.AcsResponse) (
 type MyCertResponse responses.CommonResponse
 
 // Info 将证书 响应转换为Info信息
-func (m MyCertResponse) Info(accountName string) (infos []Info, err error) {
+func (m MyCertResponse) Info(accountName string) (infos []resource.Info, err error) {
 	// Certificate 证书信息
 	type certificate struct {
 		// 是否在阿里云购买
@@ -102,7 +103,6 @@ func (m MyCertResponse) Info(accountName string) (infos []Info, err error) {
 		CertificateList []certificate `json:"CertificateList"`
 	}
 	resp := CertResp{}
-	// log.Printf("%s\n\n", responses.response.GetHttpContentString())
 	err = json.Unmarshal(m.GetHttpContentBytes(), &resp)
 
 	if err != nil {
@@ -119,8 +119,8 @@ func (m MyCertResponse) Info(accountName string) (infos []Info, err error) {
 		} else {
 			certToAccountMap[cert.Sans] = true
 
-			tmpCert := Info{
-				Name: cert.Sans,
+			tmpCert := resource.Info{
+				// 域名信息
 				EndOfTime: func(endOfTime string) string {
 					if endOfTime == "" {
 						return "error"
@@ -128,7 +128,7 @@ func (m MyCertResponse) Info(accountName string) (infos []Info, err error) {
 					return endOfTime
 				}(cert.EndDate),
 				Account: accountName,
-				Type:    ResourceMap[int(CertType)],
+				Type:    resource.ResourceMap[int(resource.CertType)],
 				Status:  s,
 			}
 

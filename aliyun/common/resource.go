@@ -4,51 +4,9 @@ import (
 	"log"
 	"sync"
 
+	"github.com/aiaoyang/resourceManager/resource"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
-)
-
-// ResourceType 资源类型枚举体
-type ResourceType int
-
-// Info 信息
-type Info struct {
-	Name      string `json:"name"`
-	EndOfTime string `json:"end"`
-	Type      string `json:"type"`
-	Detail    string `json:"detail"`
-	Account   string `json:"account"`
-	Index     string `json:"index"`
-	Status    stat   `json:"status"`
-}
-
-const (
-
-	// EcsType ecs资源类型
-	EcsType ResourceType = iota
-
-	// RdsType rds资源类型
-	RdsType
-
-	// DomainType 域名资源类型
-	DomainType
-
-	// CertType 证书资源类型
-	CertType
-
-	// AlertType 告警资源类型
-	AlertType
-)
-
-var (
-	// ResourceMap 资源类型名称
-	ResourceMap = map[int]string{
-		0: "ECS",
-		1: "RDS",
-		2: "Domain",
-		3: "Cert",
-		4: "Alert",
-	}
 )
 
 // Describe 通用调用入口
@@ -60,9 +18,9 @@ func Describe(
 	// 响应结构体
 	response responses.AcsResponse,
 	// 资源类型
-	resourceType ResourceType,
+	resourceType resource.Type,
 
-) (result []Info, err error) {
+) (result []resource.Info, err error) {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(len(clients))
@@ -87,7 +45,7 @@ func Describe(
 }
 
 type res struct {
-	infos []Info
+	infos []resource.Info
 	err   error
 }
 
@@ -97,7 +55,7 @@ func doRequest(
 	client IClient,
 	request requests.AcsRequest,
 	response responses.AcsResponse,
-	resourceType ResourceType,
+	resourceType resource.Type,
 ) {
 	defer wg.Done()
 	err := client.DoAction(request, response)

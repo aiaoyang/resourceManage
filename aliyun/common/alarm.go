@@ -5,16 +5,17 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/aiaoyang/resourceManager/resource"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/cms"
 )
 
 // GetAlarm 获取告警信息
-func GetAlarm() ([]Info, error) {
+func GetAlarm() ([]resource.Info, error) {
 	var req = NewDescribeAlarmRequest()
 	var resp = cms.CreateDescribeAlertHistoryListResponse()
-	return Describe(GlobalClients, req, resp, AlertType)
+	return Describe(GlobalClients, req, resp, resource.AlertType)
 	// return describeAlarm()
 }
 
@@ -39,20 +40,20 @@ func NewDescribeAlarmRequest() *cms.DescribeAlertHistoryListRequest {
 type MyDescribeAlertHistoryListResponse cms.DescribeAlertHistoryListResponse
 
 // Info 将Alert response转换为Info信息
-func (m MyDescribeAlertHistoryListResponse) Info(accountName string) (infos []Info, err error) {
+func (m MyDescribeAlertHistoryListResponse) Info(accountName string) (infos []resource.Info, err error) {
 	infos = append(
 		infos,
-		Info{
+		resource.Info{
 			Name:   accountName,
 			Detail: fmt.Sprintf("%d", len(m.AlarmHistoryList.AlarmHistory)),
-			Type:   ResourceMap[int(AlertType)],
+			Type:   resource.ResourceMap[int(resource.AlertType)],
 		},
 	)
 	return
 }
 
 // AcsResponseToAlarmInfo 特例函数，针对告警的信息查询，将response转为Info
-func AcsResponseToAlarmInfo(accountName string, response responses.AcsResponse) (result []Info, err error) {
+func AcsResponseToAlarmInfo(accountName string, response responses.AcsResponse) (result []resource.Info, err error) {
 	res, ok := response.(*cms.DescribeAlertHistoryListResponse)
 	if !ok {
 		err = errRDSTransferError
