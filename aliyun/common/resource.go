@@ -66,14 +66,22 @@ func doRequest(
 	response responses.AcsResponse,
 	resourceType resource.Type,
 ) {
+
 	defer wg.Done()
+
 	err := client.DoAction(request, response)
+
 	if err != nil {
-		ch <- infoResult{err: err}
+
+		ch <- infoResult{
+			err: err,
+		}
+
 		return
 	}
 
 	i, e := ResponseToResult(client.Name(), response, resourceType)
+
 	ch <- infoResult{
 		infos: i,
 		err:   e,
