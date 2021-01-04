@@ -67,7 +67,6 @@ func doRequest(
 	}
 
 	i, e := ResponseToResult(client.Name(), response, resourceType)
-	log.Println("123")
 	ch <- res{
 		infos: i,
 		err:   e,
