@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 package common
 
 import (
@@ -58,4 +56,3 @@ func (m MyDescribeInstancesResponse) Info(accountName string) (infos []resource.
 	}
 	return
 }
->>>>>>> dev
