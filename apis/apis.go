@@ -43,19 +43,6 @@ func GetCert() (string, error) {
 	return errHandler(ali.GetCert)
 }
 
-// func errHandlerOld(payload interface{}, err error) (res string, rerr error) {
-// 	if err != nil {
-// 		rerr = err
-// 		return
-// 	}
-// 	tmpRes, rerr := json.Marshal(payload)
-// 	if rerr != nil {
-// 		return
-// 	}
-// 	res = fmt.Sprintf("%s", tmpRes)
-// 	return
-// }
-
 func errHandler(funcs ...GetResourceFunc) (res string, errs error) {
 
 	errSlice := []string{}
@@ -65,7 +52,7 @@ func errHandler(funcs ...GetResourceFunc) (res string, errs error) {
 
 		result, err := fn()
 
-		if err != nil {
+		if err != nil && len(result) == 0 {
 
 			errSlice = append(errSlice, err.Error())
 
@@ -76,22 +63,21 @@ func errHandler(funcs ...GetResourceFunc) (res string, errs error) {
 		resultSlice = append(resultSlice, result...)
 
 	}
-	if errSlice != nil && len(resultSlice) == 0 {
 
+	// 如果都失败了，则将所有错误打包返回errs，令res为空
+	if len(resultSlice) == 0 {
 		errs = fmt.Errorf("%s", strings.Join(errSlice, "\n"))
-
 		return
 	}
 
+	// 如果有成功也有失败，则错误和成功结果分别放入errs和res返回
 	resultByte, err := json.Marshal(resultSlice)
 
 	if err != nil {
-
-		errs = err
-
-		return
-
+		errSlice = append(errSlice, err.Error())
 	}
+
+	errs = fmt.Errorf("%s", strings.Join(errSlice, "\n"))
 
 	res = fmt.Sprintf("%s", resultByte)
 

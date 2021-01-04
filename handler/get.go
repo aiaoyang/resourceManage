@@ -47,14 +47,28 @@ func OnGetCert(c *gin.Context) {
 func errHandler(c *gin.Context, fn getResource) {
 	payload, err := fn()
 	if err != nil {
-		c.AbortWithStatusJSON(
-			http.StatusBadRequest,
+		if payload == "" {
+
+			c.AbortWithStatusJSON(
+				http.StatusBadRequest,
+				gin.H{
+					"errmsg": err.Error(),
+					"code":   -1,
+				},
+			)
+			return
+		}
+
+		c.JSON(
+			http.StatusOK,
 			gin.H{
-				"errmsg": err.Error(),
+				"msg":    payload,
+				"errmsg": err,
 				"code":   -1,
 			},
 		)
 		return
+
 	}
 
 	c.JSON(
