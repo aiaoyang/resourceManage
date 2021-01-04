@@ -22,7 +22,7 @@
         </el-table-column> -->
         <el-table-column label="资源类型" prop="type"> </el-table-column>
         <el-table-column label="资源名称" prop="name"> </el-table-column>
-        <el-table-column label="资源规格" prop="size"> </el-table-column>
+        <el-table-column label="资源规格" prop="detail"> </el-table-column>
         <el-table-column label="到期日" prop="end">
           <template slot-scope="scope">
             <span v-if="scope.row.status == '0'" class="ok-span">

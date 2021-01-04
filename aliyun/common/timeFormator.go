@@ -3,6 +3,8 @@ package common
 import (
 	"log"
 	"time"
+
+	"github.com/aiaoyang/resourceManager/resource"
 )
 
 type timeFormat string
@@ -14,22 +16,22 @@ const (
 	rdsTimeFormat    timeFormat = "2006-01-02T15:04:05Z"
 )
 
-func parseTime(timeString string, tFormat timeFormat) (s stat) {
+func parseTime(timeString string, tFormat timeFormat) (s resource.Stat) {
 	pTime, err := time.Parse(string(tFormat), timeString)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	s = green
+	s = resource.Green
 
 	if time.Now().AddDate(0, 1, 0).After(pTime) {
-		s = yellow
+		s = resource.Yellow
 	}
 	if time.Now().AddDate(0, 0, 7).After(pTime) {
-		s = red
+		s = resource.Red
 	}
 	if time.Now().After(pTime) {
-		s = nearDead
+		s = resource.NearDead
 	}
 	return s
 }

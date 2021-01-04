@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/aiaoyang/resourceManager/apis"
@@ -48,7 +47,6 @@ func OnGetCert(c *gin.Context) {
 func errHandler(c *gin.Context, f getResource) {
 	payload, err := f()
 	if err != nil {
-		log.Printf("err : %s\n", err.Error())
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			gin.H{
