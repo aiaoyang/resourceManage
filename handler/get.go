@@ -44,13 +44,13 @@ func OnGetCert(c *gin.Context) {
 }
 
 // errHandler 错误处理
-func errHandler(c *gin.Context, f getResource) {
-	payload, err := f()
+func errHandler(c *gin.Context, fn getResource) {
+	payload, err := fn()
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			gin.H{
-				"errmsg": err,
+				"errmsg": err.Error(),
 				"code":   -1,
 			},
 		)

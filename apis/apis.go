@@ -76,7 +76,7 @@ func errHandler(funcs ...GetResourceFunc) (res string, errs error) {
 		resultSlice = append(resultSlice, result...)
 
 	}
-	if errSlice != nil && resultSlice == nil {
+	if errSlice != nil && len(resultSlice) == 0 {
 
 		errs = fmt.Errorf("%s", strings.Join(errSlice, "\n"))
 
