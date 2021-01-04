@@ -22,12 +22,38 @@ func Describe(
 
 ) (result []resource.Info, err error) {
 
+	type res struct {
+		infos []Info
+		err   error
+	}
+
 	wg := &sync.WaitGroup{}
 	wg.Add(len(clients))
 	ch := make(chan res, len(clients))
 
 	for _, client := range clients {
-		go doRequest(wg, ch, client, request, response, resourceType)
+
+		go func(
+			wg *sync.WaitGroup,
+			ch chan res,
+			client IClient,
+			request requests.AcsRequest,
+			response responses.AcsResponse,
+		) {
+
+			err = client.DoAction(request, response)
+			if err != nil {
+				return
+			}
+
+			i, e := ResponseToResult(client.Name(), response, resourceType)
+			ch <- res{
+				infos: i,
+				err:   e,
+			}
+
+			wg.Done()
+		}(wg, ch, client, request, response)
 	}
 	wg.Wait()
 

@@ -14,9 +14,9 @@ var (
 
 	errDomainTransferError = errors.New("domain response 类型不为 QueryDomainListResponse")
 
-	errCertTransferError = errors.New("cert response 类型不为 CommonResponse")
+	errCertTransferError = errors.New("cert response 类型不为 MyDescribeDBInstancesResponse")
 
-	errRDSTransferError = errors.New("rds response 类型不为 MyDescribeDBInstancesResponse")
+	errRDSTransferError = errors.New("rds response 类型不为 CommonResponse")
 )
 
 // ResponseToResult 通用响应转换函数  Response转为我们所需要Info
