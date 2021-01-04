@@ -23,7 +23,7 @@ func Describe(
 ) (result []resource.Info, err error) {
 
 	type res struct {
-		infos []Info
+		infos []resource.Info
 		err   error
 	}
 
