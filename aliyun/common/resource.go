@@ -9,6 +9,11 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 )
 
+type infoResult struct {
+	infos []resource.Info
+	err   error
+}
+
 // Describe 通用调用入口
 func Describe(
 	// 客户端列表
@@ -22,44 +27,27 @@ func Describe(
 
 ) (result []resource.Info, err error) {
 
-	type res struct {
-		infos []resource.Info
-		err   error
-	}
-
 	wg := &sync.WaitGroup{}
 	wg.Add(len(clients))
-	ch := make(chan res, len(clients))
+	resultChan := make(chan infoResult, len(clients))
 
 	for _, client := range clients {
 
-		go func(
-			wg *sync.WaitGroup,
-			ch chan res,
-			client IClient,
-			request requests.AcsRequest,
-			response responses.AcsResponse,
-		) {
-
-			err = client.DoAction(request, response)
-			if err != nil {
-				return
-			}
-
-			i, e := ResponseToResult(client.Name(), response, resourceType)
-			ch <- res{
-				infos: i,
-				err:   e,
-			}
-
-			wg.Done()
-		}(wg, ch, client, request, response)
+		go doRequest(
+			wg,
+			resultChan,
+			client,
+			request,
+			response,
+			resourceType,
+		)
 	}
+
 	wg.Wait()
 
-	close(ch)
+	close(resultChan)
 
-	for info := range ch {
+	for info := range resultChan {
 		if info.err != nil {
 			err = info.err
 		} else {
@@ -70,14 +58,9 @@ func Describe(
 	return
 }
 
-type res struct {
-	infos []resource.Info
-	err   error
-}
-
 func doRequest(
 	wg *sync.WaitGroup,
-	ch chan res,
+	ch chan infoResult,
 	client IClient,
 	request requests.AcsRequest,
 	response responses.AcsResponse,
@@ -86,12 +69,12 @@ func doRequest(
 	defer wg.Done()
 	err := client.DoAction(request, response)
 	if err != nil {
-		ch <- res{err: err}
+		ch <- infoResult{err: err}
 		return
 	}
 
 	i, e := ResponseToResult(client.Name(), response, resourceType)
-	ch <- res{
+	ch <- infoResult{
 		infos: i,
 		err:   e,
 	}
