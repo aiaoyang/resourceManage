@@ -19,7 +19,7 @@ func Describe(
 	// 客户端列表
 	clients []IClient,
 	// 请求结构体
-	request func() requests.AcsRequest,
+	requestFunc func() requests.AcsRequest,
 	// 响应结构体
 	responseFunc func() responses.AcsResponse,
 	// 资源类型
@@ -36,7 +36,7 @@ func Describe(
 			wg,
 			resultChan,
 			client,
-			request,
+			requestFunc,
 			responseFunc,
 			resourceType,
 		)
