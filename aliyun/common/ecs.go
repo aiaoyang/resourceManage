@@ -2,7 +2,6 @@ package common
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/aiaoyang/resourceManager/resource"
 
@@ -17,13 +16,11 @@ func GetECS() ([]resource.Info, error) {
 	var req = ecs.CreateDescribeInstancesRequest()
 	// (每页100)
 	req.PageSize = requests.NewInteger(100)
-	log.Println("123")
 	return Describe(GlobalClients, req, resp, resource.EcsType)
 }
 
 // AcsResponseToEcsInfo 特例函数，针对ecs的信息查询，将response转为Info
 func AcsResponseToEcsInfo(accountName string, response responses.AcsResponse) (result []resource.Info, err error) {
-	log.Println("123")
 	res, ok := response.(*ecs.DescribeInstancesResponse)
 	if !ok {
 		err = errECSTransferError

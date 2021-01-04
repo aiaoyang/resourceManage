@@ -1,7 +1,6 @@
 package common
 
 import (
-	"log"
 	"sync"
 
 	"github.com/aiaoyang/resourceManager/resource"
@@ -61,7 +60,6 @@ func doRequest(
 	defer wg.Done()
 	err := client.DoAction(request, response)
 	if err != nil {
-		log.Println(err)
 		ch <- res{err: err}
 		return
 	}
