@@ -14,7 +14,6 @@ func GetCert() (infos []Info, err error) {
 	// CommonRequest 需要转换到AcsRequest才可进行DoAction函数调用，否则Ontology字段为空指针
 	req.TransToAcsRequest()
 
-	// log.Println(resp.String())
 	return Describe(GlobalClients, req, resp, CertType)
 }
 
