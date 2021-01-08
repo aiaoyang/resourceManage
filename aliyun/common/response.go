@@ -8,7 +8,15 @@ import (
 )
 
 // ResponseToResult 通用响应转换函数  Response转为我们所需要Info
-func ResponseToResult(accountName string, response responses.AcsResponse, resourceType resource.Type) (result []resource.Info, err error) {
+func ResponseToResult(
+
+	accountName string,
+
+	response responses.AcsResponse,
+
+	resourceType resource.Type,
+
+) (result []resource.Info, err error) {
 
 	switch resourceType {
 	case resource.EcsType:
