@@ -1,6 +1,6 @@
 image: golang:1.5
 
-befor_script:
+before_script:
   - echo "befor script section"
 
 after_script:
