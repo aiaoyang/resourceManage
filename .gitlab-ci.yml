@@ -1,3 +1,17 @@
 image: golang:1.5
 
 befor_script:
+  - echo "befor script section"
+
+after_script:
+  - echo "after script"
+
+build:
+  stage: build
+  script:
+    - go build
+
+test1:
+  stage: test
+  script:
+    - ping -c 10.0.0.253
